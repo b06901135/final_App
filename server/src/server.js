@@ -116,7 +116,7 @@ app.get('/api/quiz/:wordnum', (req, res) => {
 
 app.post('/api/update', (req, res) => {
     const { word, definition, flag } = req.body
-    Vocab.findOneAndUpdate({ word: word }, { flag: flag }, err => {
+    Vocab.findOneAndUpdate({ word: word }, { definition: definition, flag: flag }, err => {
         if (err) return res.json({ success: false, error: err })
         return res.json({ success: true })
     })
