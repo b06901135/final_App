@@ -1,22 +1,23 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import Navbar from '../containers/Navbar';
 
 export default class AddNew extends Component {
     state = {
-        name: '',
+        word: '',
         definition: '',
         new_words: []
     }
     addNew = () => {
-        document.getElementById('name').value = '';
+        document.getElementById('word').value = '';
         document.getElementById('definition').value = '';
-        document.getElementById('name').focus();
+        document.getElementById('word').focus();
         this.setState(state => ({
             new_words: [...state.new_words, {
-                name: state.name,
+                word: state.word,
                 definition: state.definition
             }],
-            name: '',
+            word: '',
             definition: ''
         }))
     }
@@ -30,6 +31,10 @@ export default class AddNew extends Component {
     }
     submit = () => {
         console.log(this.state.new_words);
+        axios.post('api/add', {data: this.state.new_words})
+        .then(res => {
+            console.log(res.data);
+        });
     }
     render() {
         return (
@@ -40,7 +45,7 @@ export default class AddNew extends Component {
                         <div className="card-body">
                             <h2>Add new word</h2>
                             <div className="input-group mb-3">
-                                <input id="name" name="name" type="text" className="form-control" onChange={e => this.onChange(e)} />
+                                <input id="word" name="word" type="text" className="form-control" onChange={e => this.onChange(e)} />
                                 <div className="input-group-prepend">
                                     <span className="input-group-text">word</span>
                                 </div>
@@ -69,7 +74,7 @@ export default class AddNew extends Component {
                                         this.state.new_words.map(word => {
                                             return (
                                                 <tr>
-                                                    <td>{word.name}</td>
+                                                    <td>{word.word}</td>
                                                     <td>{word.definition}</td>
                                                 </tr>
                                             );

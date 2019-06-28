@@ -16,7 +16,6 @@ export default class Quiz extends Component {
         this.setState({answers, answers});
     }
     submit = () => {
-        console.log(this.state.answers);
         let quiz = this.state.quiz;
         let answers = this.state.answers;
         for (let i = 0; i < quiz.length; i++) {
