@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon --exec babel-node src/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "nodemon --exec babel-node src/test.js"
   },
   "keywords": [],
   "author": "",
@@ -20,7 +20,8 @@
     "mongodb": "^3.2.7",
     "mongoose": "^5.6.1",
     "morgan": "^1.9.1",
-    "nodemon": "^1.19.1"
+    "nodemon": "^1.19.1",
+    "papaparse": "^5.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",

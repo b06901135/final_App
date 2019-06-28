@@ -6,11 +6,11 @@ const bodyParser = require('body-parser')
 const logger = require('morgan')
 var cors = require('cors')
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 8080
 
 const app = express()
 
-const csv = require('csv-parser')
+import Papa from 'papaparse'
 const fs = require('fs')
 import shuffle from './util'
 import Vocab from './models/vocab'
@@ -29,6 +29,8 @@ mongoose.connect(
 let db = mongoose.connection
 // db.dropDatabase()
 
+let cache = {data: [], slot_size: 0}
+
 db.on('error', error => {
     console.log(error)
 })
@@ -41,25 +43,22 @@ app.use(logger('dev'))
 mongoose.set('useFindAndModify', false)
 
 if (process.env.INIT === 'True') {
-    const obj = []
+
     const processed_csv = 'src/localdb/word.csv'
-    fs.createReadStream(processed_csv).pipe(csv())
-        .on('data', (data) => obj.push(data))
-        .on('end', () => {
-            console.log('read file sucess')
-            obj.map(data => {
-                let word = new Vocab()
-                word.word = data['word']
-                word.definition = data['definition']
-                word.flag = false
-                word.save(err => {
-                    if (err) {
-                        console.log(err)
-                    }
-                })
-            })
-            console.log('init succ') 
+    let data = Papa.parse(fs.readFileSync(processed_csv).toString())
+    console.log('Read data success')
+    data.data.map(voc => {
+        let word = new Vocab()
+        word.word = voc[0]
+        word.definition = voc[1]
+        word.flag = false
+        word.save(err => {
+            if (err) {
+                console.log(err)
+            }
         })
+    })
+    console.log('DB init success')
 }
 
 app.get('/api/words', (req, res) => {
@@ -69,12 +68,36 @@ app.get('/api/words', (req, res) => {
     })
 })
 
-app.get('/api/words/:wordnum', (req, res) => {
-    Vocab.find({flag: false} ,(err, data) => {
+app.get('/api/words/:wordnum/page/:pagenum', (req, res) => {
+    if(cache.data.length > 0 && parseInt(req.params.wordnum) === cache.slot_size) {
+        let page = parseInt(req.params.pagenum)
+        let top_n = cache.data.slice((page - 1) * cache.slot_size, page * cache.slot_size)
+            return res.json({ success: true, data: top_n })
+    }
+    else {
+        Vocab.find({ flag: false }, (err, data) => {
+            if (err) return res.json({ success: false, error: err })
+            else {
+                shuffle(data)
+                cache.data = data
+                cache.slot_size = parseInt(req.params.wordnum)
+                let top_n = data.slice(0, parseInt(req.params.wordnum))
+                return res.json({ success: true, data: top_n })
+            }
+        })
+    }
+})
+
+app.get('/api/words/:char/:wordnum', (req, res) => {
+    Vocab.find({flag: false}, (err, data) => {
         if (err) return res.json({ success: false, error: err })
         else {
+            let selected = []
             shuffle(data)
-            let top_n = data.slice(0, parseInt(req.params.wordnum))
+            selected = data.filter(voc => {
+                return voc.word[0] == req.params.char
+            })
+            let top_n = selected.slice(0, parseInt(req.params.wordnum))
             return res.json({ success: true, data: top_n })
         }
     })
@@ -85,7 +108,6 @@ app.get('/api/quiz/:wordnum', (req, res) => {
         if (err) return res.json({ success: false, error: err })
         else {
             shuffle(data)
-            let wn = parseInt(req.params.wordnum)
             let top_n = data.slice(0, parseInt(req.params.wordnum))
             return res.json({ success: true, data: top_n })
         }
@@ -94,7 +116,7 @@ app.get('/api/quiz/:wordnum', (req, res) => {
 
 app.post('/api/update', (req, res) => {
     const { word, definition, flag } = req.body
-    Vocab.findOneAndUpdate({ word: word }, {flag: flag}, err => {
+    Vocab.findOneAndUpdate({ word: word }, { flag: flag }, err => {
         if (err) return res.json({ success: false, error: err })
         return res.json({ success: true })
     })
@@ -102,25 +124,21 @@ app.post('/api/update', (req, res) => {
 
 app.post('/api/add', (req, res) => {
     let voc = new Vocab()
-    const { word, definition} = req.body
-    if ((!id && id !== 0)) {
-        return res.json({
-            success: false,
-            error: 'INVALID INPUTS'
+    const { data } = req.body
+    data.map((voc) => {
+        voc.word = word
+        voc.definition = definition
+        voc.flag = false
+        voc.save(err => {
+            if (err) return res.json({ success: false, error: err })
+            return res.json({ success: true })
         })
-    }
-    voc.word = word
-    voc.definition = definition
-    voc.flag = false
-    voc.save(err => {
-        if (err) return res.json({ success: false, error: err })
-        return res.json({ success: true })
     })
 })
 
 app.post('/api/delete', (req, res) => {
     const { word } = req.body
-    Vocab.findOneAndDelete({word: word}, (err => {
+    Vocab.findOneAndDelete({ word: word }, (err => {
         if (err) return res.json({ success: false, error: err })
         return res.json({ success: true })
     }))
