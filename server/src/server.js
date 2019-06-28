@@ -115,21 +115,27 @@ app.get('/api/quiz/:wordnum', (req, res) => {
 })
 
 app.post('/api/update', (req, res) => {
-    const { word, definition, flag } = req.body
-    Vocab.findOneAndUpdate({ word: word }, { definition: definition, flag: flag }, err => {
+    const {_id, word, definition, flag } = req.body
+    Vocab.findById(id, (err, voc) => {
         if (err) return res.json({ success: false, error: err })
-        return res.json({ success: true })
+        voc.word = word
+        voc.definition = definition
+        voc.flag = flag
+        voc.save(err => {
+            if (err) return res.json({ success: false, error: err })
+            return res.json({ success: true })
+        })
     })
 })
 
 app.post('/api/add', (req, res) => {
-    let voc = new Vocab()
+    let new_voc = new Vocab()
     const { data } = req.body
     data.map((voc) => {
-        voc.word = word
-        voc.definition = definition
-        voc.flag = false
-        voc.save(err => {
+        new_voc.word =voc.word
+        new_voc.definition = voc.definition
+        new_voc.flag = false
+        new_voc.save(err => {
             if (err) return res.json({ success: false, error: err })
             return res.json({ success: true })
         })
