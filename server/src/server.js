@@ -85,9 +85,8 @@ app.get('/api/quiz/:wordnum', (req, res) => {
         if (err) return res.json({ success: false, error: err })
         else {
             shuffle(data)
-            let top_n = data.slice(0, parseInt(req.params.wordnum)).map((voc, i) => {
-                voc['id'] = i
-            })
+            let wn = parseInt(req.params.wordnum)
+            let top_n = data.slice(0, parseInt(req.params.wordnum))
             return res.json({ success: true, data: top_n })
         }
     })
