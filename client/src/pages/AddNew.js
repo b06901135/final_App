@@ -8,32 +8,35 @@ export default class AddNew extends Component {
         new_words: []
     }
     addNew = () => {
-        this.setState(state => ({new_words: [...state.new_words, {
-            name: state.name,
-            definition: state.definition
+        document.getElementById('name').value = '';
+        document.getElementById('definition').value = '';
+        document.getElementById('name').focus();
+        this.setState(state => ({
+            new_words: [...state.new_words, {
+                name: state.name,
+                definition: state.definition
             }],
             name: '',
             definition: ''
         }))
     }
     onChange = (e) => {
-        this.setState({[e.target.name]: e.target.value});
+        this.setState({ [e.target.name]: e.target.value });
     }
     onKeyup = (e) => {
         if (e.keyCode === 13) {
-            document.getElementById('name').setAttribute('value', '');
-            document.getElementById('definition').setAttribute('value', '');
             this.addNew();
         }
     }
-    submit = () => {}
+    submit = () => {
+        console.log(this.state.new_words);
+    }
     render() {
         return (
             <div>
                 <Navbar />
-                <div className="container">
-
-                    <div className="card">
+                <div className="container-fluid" style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap' }}>
+                    <div className="card" style={{ width: '500px' }}>
                         <div className="card-body">
                             <h2>Add new word</h2>
                             <div className="input-group mb-3">
@@ -48,7 +51,33 @@ export default class AddNew extends Component {
                                     <span className="input-group-text">definition</span>
                                 </div>
                             </div>
-                            <button className="btn" style={{width: '150px', backgroundColor: '#e8ecef'}} onClick={() => this.addNew()}>create</button>
+                            <button className="btn" style={{ width: '150px', backgroundColor: '#e8ecef' }} onClick={() => this.addNew()}>create</button>
+                        </div>
+                    </div>
+                    <div className="card" style={{ width: '500px' }}>
+                        <div className="card-body">
+                            <h2>Words to add</h2>
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">word</th>
+                                        <th scope="col">definition</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        this.state.new_words.map(word => {
+                                            return (
+                                                <tr>
+                                                    <td>{word.name}</td>
+                                                    <td>{word.definition}</td>
+                                                </tr>
+                                            );
+                                        })
+                                    }
+                                </tbody>
+                            </table>
+                            <button className="btn" style={{ width: '150px', backgroundColor: '#e8ecef' }} onClick={() => this.submit()}>add to dictionary</button>
                         </div>
                     </div>
                 </div>
