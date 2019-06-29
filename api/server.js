@@ -20,5 +20,6 @@ app.use(express.json());
 
 app.use('/api/word', require('./routes/api/word'));
 app.use('/api/quiz', require('./routes/api/quiz'));
+app.use(express.static('./client/build'));
 
 app.listen(PORT, () => console.log(`Server started at port ${PORT}`))
