@@ -69,12 +69,12 @@ router.post('/:method', (req, res) => {
                     })
                     .catch(err => {
                         console.log(err);
-                        res.json({error: err});
+                        res.json({ error: err });
                     });
             }));
         });
         Promise.all(promises).then(() => {
-            res.json({success: 'words added'});
+            res.json({ success: 'words added' });
         });
     } else {
         const { name, definition } = req.body;
@@ -96,20 +96,34 @@ router.put('/:id', (req, res) => {
     const id = req.params.id;
     const { word, definition, flag } = req.body;
     Word.findById(id)
-    .then(item => {
-        console.log('word', word);
-        if (word !== undefined) item.word = word;
-        if (definition !== undefined) item.definition = definition;
-        if (flag !== undefined) item.flag = flag;
-        item.save()
-            .then((ele) => {
-                res.json({success: `update ${id}`, data: ele});
-            });
-    })
-    .catch(err => {
-        res.json({error: err});
-    });
+        .then(item => {
+            console.log('word', word);
+            if (word !== undefined) item.word = word;
+            if (definition !== undefined) item.definition = definition;
+            if (flag !== undefined) item.flag = flag;
+            item.save()
+                .then((ele) => {
+                    res.json({ success: `update ${id}`, data: ele });
+                });
+        })
+        .catch(err => {
+            res.json({ error: err });
+        });
 });
+
+router.delete('/:id', (req, res) => {
+    const id = req.params.id;
+    Word.findById(id)
+        .then(word => {
+            word.delete()
+                .then(() => {
+                    res.json({ success: 'word deleted' })
+                });
+        })
+        .catch(err => {
+            res.json({ error: err });
+        })
+})
 
 
 module.exports = router;

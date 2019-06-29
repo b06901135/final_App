@@ -31,3 +31,8 @@ nav {
 .dropdown-item {
     padding: 0 10px;
 }
+
+.btn-danger {
+    background-color: #f32828;
+    color: #fff;
+}
