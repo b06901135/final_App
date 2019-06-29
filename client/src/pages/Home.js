@@ -5,53 +5,58 @@ import Navbar from '../containers/Navbar';
 
 export default class Home extends Component {
     state = {
-        number: 20,
+        filter: 'all',
+        sort: 'date',
         page: 1,
+        number: 20,
         words: null
     }
     flagged = (_id) => {
-        let word = this.state.words.find(ele => {
+        let words = this.state.words;
+        let index = words.findIndex(ele => {
             return (ele._id === _id);
         });
-        word.flag = ! word.flag;
-        axios.post('api/update', word)
-        .then(res => {
-            console.log(res.data);
-        });
+        axios.put(`api/word/${_id}`, { flag: ! words[index].flag })
+            .then(res => {
+                if (res.data.success) {
+                    words[index] = res.data.data;
+                    this.setState({words: words});
+                }
+            });
     }
     sortedBy = (method) => {
-        console.log(`sorted by ${method}`);
+        let state = this.state;
+        state.sort = method;
+        this.fetchData(state);
+        this.setState(state);
     }
     setCategory = (category) => {
         console.log(`set category ${category}`);
+        let state = this.state;
+        state.filter = category;
+        this.fetchData(state);
+        this.setState(state);
     }
     changePage = (method) => {
-        let page = this.state.page;
+        let state = this.state;
         if (method === 'next') {
-            this.setState(state => ({page: page + 1}));
-            axios.get(`api/words/${this.state.number}/page/${page + 1}`)
-            .then(res => {
-                if (res.data.success === true) {
-                    this.setState({words: res.data.data});
-                }
-            });
-        } else if (method === 'previous' && page > 1) {
-            this.setState(state => ({page: page - 1}));
-            axios.get(`api/words/${this.state.number}/page/${page - 1}`)
-            .then(res => {
-                if (res.data.success === true) {
-                    this.setState({words: res.data.data});
-                }
-            });
+            state.page += 1;
+        } else if (method === 'previous' && state.page > 1) {
+            state.page -= 1;
         }
+        this.fetchData(state);
+        this.setState(state);
+    }
+    fetchData = (state) => {
+        axios.get(`api/word/${state.filter}/${state.sort}/${state.number * (state.page - 1)}/${state.number * (state.page)}`)
+            .then(res => {
+                if (res.data.success) {
+                    this.setState({ words: res.data.data });
+                }
+            });
     }
     componentDidMount() {
-        axios.get(`api/words/${this.state.number}/page/${this.state.page}`)
-        .then(res => {
-            if (res.data.success === true) {
-                this.setState({words: res.data.data});
-            }
-        });
+        this.fetchData(this.state);
     }
     render() {
         if (this.state.words === null) {
@@ -61,17 +66,29 @@ export default class Home extends Component {
                 <div>
                     <Navbar />
                     <div className="container-fluid" style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap' }}>
-                        <div className="card" style={{width: '900px'}}>
+                        <div className="card" style={{ width: '900px' }}>
                             <div className="card-body">
-                                <h2 style={{ display: 'inline-block' }}>My words <small style={{color: '#a9a9a9', fontWeight: '300'}}>page {this.state.page}</small></h2>
+                                <h2 style={{ display: 'inline-block' }}>My words <small style={{ color: '#a9a9a9', fontWeight: '300' }}>page {this.state.page}</small></h2>
                                 <div className="dropdown" style={{ float: 'right' }}>
-                                    <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <button className="btn dropdown-toggle" type="button" id="dropdownSortedBy" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Sorted by
                                     </button>
-                                    <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <a className="dropdown-item" onClick={() => this.sortedBy('alphabetic')}>alphabetic</a>
-                                        <a className="dropdown-item" onClick={() => this.sortedBy('latest')}>latest</a>
+                                    <div className="dropdown-menu" aria-labelledby="dropdownSortedBy">
+                                        <a className="dropdown-item" onClick={() => this.sortedBy('asc')}>alphabetic</a>
+                                        <a className="dropdown-item" onClick={() => this.sortedBy('date')}>latest</a>
                                         <a className="dropdown-item" onClick={() => this.sortedBy('flag')}>flag</a>
+                                    </div>
+                                </div>
+                                <div className="dropdown" style={{ float: 'right' }}>
+                                    <button className="btn dropdown-toggle" type="button" id="dropdownCategory" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Category
+                                    </button>
+                                    <div className="dropdown-menu" aria-labelledby="dropdownCategory">
+                                        {['all', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'].map(ele => {
+                                            return (
+                                                <a className="dropdown-item" onClick={() => this.setCategory(ele)}>{ele}</a>
+                                            );
+                                        })}
                                     </div>
                                 </div>
                                 <table className="table">
@@ -94,7 +111,7 @@ export default class Home extends Component {
                                                                 return { color: '#d8d8d8' };
                                                             }
                                                         })()} /></td>
-                                                        <td>{word.word}</td>
+                                                        <td>{word.name}</td>
                                                         <td>{word.definition}</td>
                                                     </tr>
                                                 );

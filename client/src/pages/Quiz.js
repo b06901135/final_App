@@ -13,33 +13,35 @@ export default class Quiz extends Component {
         answers[answers.findIndex(ele => {
             return (ele._id === _id);
         })].answer = e.target.value;
-        this.setState({answers, answers});
+        this.setState({ answers, answers });
     }
     submit = () => {
         let quiz = this.state.quiz;
         let answers = this.state.answers;
         for (let i = 0; i < quiz.length; i++) {
-            if (quiz[i].word === answers[i].answer) {
+            if (quiz[i].name === answers[i].answer) {
                 quiz[i].correct = true;
+            } else {
+                quiz[i].correct = false;
             }
         }
-        this.setState({quiz: quiz});
+        this.setState({ quiz: quiz });
     }
     componentDidMount() {
         axios.get(`api/quiz/${this.state.number}`)
-        .then(res => {
-            if (res.data.success === true) {
-                let quiz = res.data.data;
-                let answers = quiz.map(ele => {
-                    return {
-                        _id: ele._id,
-                        word: ele.word,
-                        answer: ''
-                    };
-                });
-                this.setState({quiz: quiz, answers: answers});
-            }
-        });
+            .then(res => {
+                if (res.data.success) {
+                    let quiz = res.data.data;
+                    let answers = quiz.map(ele => {
+                        return {
+                            _id: ele._id,
+                            word: ele.word,
+                            answer: ''
+                        };
+                    });
+                    this.setState({ quiz: quiz, answers: answers });
+                }
+            });
     }
     render() {
         if (this.state.quiz === null) {
@@ -49,7 +51,7 @@ export default class Quiz extends Component {
                 <div>
                     <Navbar />
                     <div className="container">
-    
+
                         <div className="card">
                             <div className="card-body">
                                 <h2>Quiz</h2>
@@ -67,7 +69,11 @@ export default class Quiz extends Component {
                                                     <td><input type="text" className="form-control" onChange={(e) => this.onChange(word._id, e)} style={{ padding: '0', height: '1.5rem' }} /></td>
                                                     <td style={(() => {
                                                         if (word.correct === true) {
-                                                            return {backgroundColor: '#caefd2'}
+                                                            return { backgroundColor: '#caefd2' }
+                                                        } else if (word.correct == false) {
+                                                            return { backgroundColor: '#ffd3d3' }
+                                                        } else {
+                                                            return null;
                                                         }
                                                     })()}>{word.definition}</td>
                                                 </tr>
