@@ -18,16 +18,18 @@ cd ./api
 # Install dependencies for server
 npm install
 
-# Install dependencies for client
-npm run client-install
-
-# Build react app for client
-npm run client-build
-
 # Run server
 npm start
+
+# Build react app for client
+cd ../client
+npm install
+
+# Run client
+npm start
 ```
-4. Application starts at `http://localhost:5000`
+4. Server starts at `http://localhost:5000`
+5. Client starts at `http://licalhost:3000`
 
 ## Framework used
 
