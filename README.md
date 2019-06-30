@@ -22,21 +22,47 @@ npm install
 npm start
 
 # Build react app for client
-cd ../client
+# open another console
+cd ./client
 npm install
+
+# Build
+npm run build
 
 # Run client
 npm start
 ```
-4. Server starts at `http://localhost:5000`
-5. Client starts at `http://licalhost:3000`
+3. Server starts at `http://localhost:5000`
+4. Client starts at `http://licalhost:3000`
 
-## Framework used
+## 簡介影片
+https://youtu.be/6tvoHw9wZjQ
 
 ## Module used
 
+### client
+react
+react-router
+axios
+Bootstrap
+
+### server
+express
+cors
+body-parser
+morgan
+dotenv
+mongoose
+mongodb
+papaparse
+common-json
+
 ## My contribution
+client有使用到Bootstrap提供CSS的樣式，其餘的部分就是react-router和react用來render畫面。
+server完全手刻，基本上使用上課有教到的套件再加上一些讀取local檔案的parser而已，並沒有特別的地方。
 
-## Experience
+### 分工
+李威緒負責server和製作影片，陳宣叡負責client和一部分的server
 
-## References
+## 心得
+這次的final project做的很趕，在繳交的當下，影片還來不及上傳完畢。這次一起寫final寫得很緊張，因為我們分frontend和backend寫，所以在進行測試的時候發現有bug要對方修，還要等到對方回訊息，非常的沒有效率，還好最後還是作出了一點東西。
