@@ -29,12 +29,14 @@ export default class Home extends Component {
     sortedBy = (method) => {
         let state = this.state;
         state.sort = method;
+        state.page = 1
         this.fetchData(state);
         this.setState(state);
     }
     setCategory = (category) => {
         let state = this.state;
         state.filter = category;
+        state.page = 1
         this.fetchData(state);
         this.setState(state);
     }

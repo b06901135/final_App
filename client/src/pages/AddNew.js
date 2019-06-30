@@ -31,10 +31,13 @@ export default class AddNew extends Component {
     }
     submit = () => {
         console.log('posttt');
+        let state = this.state
         axios.post('api/word/list', { data: this.state.new_words })
             .then(res => {
                 console.log(res.data);
             });
+        state.new_words = []
+        this.setState(state);
     }
     render() {
         return (
