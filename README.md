@@ -37,6 +37,7 @@ npm start
 
 ## 簡介影片
 https://youtu.be/6tvoHw9wZjQ
+https://www.dropbox.com/h?preview=React+App+-+Google+Chrome+2019-06-30+19-16-27.mp4
 
 ## Module used
 
