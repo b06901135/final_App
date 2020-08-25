@@ -1,6 +1,7 @@
 # Word Memorizer
 * This is an app that you can add your own word and definition pairs, with sorting and filtering functionality.
 * You can also take a quiz with random generated definitions from your database.
+* View the demo video [here](https://youtu.be/6tvoHw9wZjQ).
 
 ## How to Use
 1. Open the website, and add your words
@@ -36,9 +37,6 @@ npm start
 ```
 3. Server starts at `http://localhost:5000`
 4. Client starts at `http://licalhost:3000`
-
-## Demo Video
-View the demo video [here](https://youtu.be/6tvoHw9wZjQ).
 
 ## Module Used
 ### Client
