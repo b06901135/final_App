@@ -1,6 +1,8 @@
 # Word Memorizer
+* This is an app that you can add your own word and definition pairs, with sorting and filtering functionality.
+* You can also take a quiz with random generate definitions from your database.
 
-## How to use
+## How to Use
 1. Open the website, and add your words
 2. Choose custom category, default to 'all'
 3. Choose custom sort method, default to 'date'
@@ -8,7 +10,7 @@
 5. Set sort method to flag to see only flagged words
 6. Delete words that you no longer need
 
-## How to build
+## How to Build
 
 1. Clone the repository
 2. Install dependencies and run server
@@ -38,14 +40,14 @@ npm start
 ## Demo Video
 View the demo video [here](https://youtu.be/6tvoHw9wZjQ).
 
-## Module used
-### Client side
+## Module Used
+### Client
 * react
 * react-router
 * axios
 * Bootstrap
 
-### Server side
+### Server
 * express
 * cors
 * body-parser
@@ -56,7 +58,7 @@ View the demo video [here](https://youtu.be/6tvoHw9wZjQ).
 * papaparse
 * common-json
 
-## My contribution
+## My Contributions
 * Use Bootstrap as CSS template, and use react-router and react to render the client side view.
 * Server side is an api made from express, with functionality to read local file.
 
