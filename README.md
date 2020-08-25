@@ -1,6 +1,6 @@
 # Word Memorizer
 * This is an app that you can add your own word and definition pairs, with sorting and filtering functionality.
-* You can also take a quiz with random generate definitions from your database.
+* You can also take a quiz with random generated definitions from your database.
 
 ## How to Use
 1. Open the website, and add your words
